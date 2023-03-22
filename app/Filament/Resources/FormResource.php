@@ -19,11 +19,10 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Forms\Components\Section;
 use Illuminate\Support\Facades\Auth;
-use Filament\Forms\Components\Card;
 use Filament\Forms\Components\Fieldset;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Components\Hidden;
+
  
 class FormResource extends Resource
 {
@@ -32,16 +31,16 @@ class FormResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-document';
 
     public static function form(Form $form): Form
-    {
+    { 
         return $form
             ->schema([
+                Hidden::make('user_id')->default(Auth::id()),
                 // Section1: 新生基本資料
                 Section::make('新生基本資料')
                 ->schema([
-                    TextInput::make('form_number')->numeric()->unique()->required(),
                     TextInput::make('applier')->required(),
-                TextInput::make('year')->numeric()->required(),
-                Select::make('semester')->options([
+                    TextInput::make('year')->numeric()->required(),
+                    Select::make('semester')->options([
                     '上學期' => '上學期',
                     '下學期' => '下學期',
                 ])->required(),
@@ -175,7 +174,7 @@ class FormResource extends Resource
                 // Section3: 申請資料附件
                 Section::make('申請資料附件')
                 ->schema([
-                    SpatieMediaLibraryFileUpload::make('attachment')->collection('forms')
+                    SpatieMediaLibraryFileUpload::make('attachment')->collection('forms')->preserveFilenames()
                     ->enableDownload(),
                 ])
                 ->collapsible(),
@@ -226,7 +225,7 @@ class FormResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+           
         ];
     }
     
@@ -237,5 +236,24 @@ class FormResource extends Resource
             'create' => Pages\CreateForm::route('/create'),
             'edit' => Pages\EditForm::route('/{record}/edit'),
         ];
-    }  
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $user = Auth::user();
+        $userId = Auth::id();
+        $userDistrict = $user->district;
+        $userSchool = $user->school;
+
+        if ($userDistrict !== '不分區') {
+            if ($user->hasRole('學生')) {
+            return parent::getEloquentQuery()->where('user_id', $userId);
+            } else if ($userSchool == '不分校') {
+                return parent::getEloquentQuery()->where('district', $userDistrict);
+            } else {
+                return parent::getEloquentQuery()->where('school', $userSchool);
+            }
+        }
+        return parent::getEloquentQuery();
+    }
 }

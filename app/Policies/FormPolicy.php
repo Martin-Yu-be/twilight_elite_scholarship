@@ -36,9 +36,9 @@ class FormPolicy
      */
     public function create(User $user): bool
     {
-        $userForm = $user->forms()->exists();
-        
-        if ($user->hasRole('Admin') || !$userForm && $user->hasPermissionTo('create form')) {
+        $formNotCreated = Form::where('user_id', $user->id)->doesntExist();
+
+        if ($user->hasRole('Admin') || $user->hasPermissionTo('create form') && $formNotCreated) {
             return true;
         }
 
@@ -53,7 +53,7 @@ class FormPolicy
         $userId = $user->id;
         $userSchool = $user->school;
         $userDistrict = $user->district;
-        $formUserId = $form->users()->where('user_id', $userId)->exists();
+        $formUserId = $form->where('user_id', $userId)->exists();
         $formSchool = $form->school;
         $formDistrict = $form->district;
 

@@ -32,10 +32,12 @@ class InstructionResource extends Resource
                 Section::make('獎學金申請簡章')
                 ->schema([
                     TextInput::make('name')->required(),
-                    SpatieMediaLibraryFileUpload::make('簡章檔案')->collection('instructions')
+                    SpatieMediaLibraryFileUpload::make('簡章檔案')
+                    ->collection('instructions')
+                    ->preserveFilenames()
                     ->enableDownload()
-                ->required(),
-                ])->collapsible()
+                    ->required(),
+                ])
             ]);
     }
 

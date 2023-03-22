@@ -14,10 +14,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use App\Models\Form;
 use App\Models\Role;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use JeffGreco13\FilamentBreezy\Traits\TwoFactorAuthenticatable;
 
 class User extends Authenticatable implements FilamentUser
 {
-    use HasRoles, HasApiTokens, HasFactory, Notifiable;
+    use HasRoles, HasApiTokens, HasFactory, Notifiable, TwoFactorAuthenticatable;
 
     /**
      * The attributes that are mass assignable.
@@ -32,9 +34,9 @@ class User extends Authenticatable implements FilamentUser
         'school',
     ];
 
-    public function forms(): BelongsToMany
+    public function form(): HasOne
     {
-        return $this->belongsToMany(Form::class);
+        return $this->hasOne(Form::class);
     }
 
     public function role(): BelongsTo

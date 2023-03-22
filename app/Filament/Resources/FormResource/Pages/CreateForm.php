@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\FormResource\Pages;
 
 use App\Filament\Resources\FormResource;
-use Filament\Pages\Actions;
 use Filament\Resources\Pages\CreateRecord;
+use Illuminate\Support\Facades\Auth;
 
 class CreateForm extends CreateRecord
 {
