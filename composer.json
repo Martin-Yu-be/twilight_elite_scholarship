@@ -11,6 +11,7 @@
         "filament/notifications": "^2.0",
         "filament/spatie-laravel-media-library-plugin": "^2.0",
         "guzzlehttp/guzzle": "^7.2",
+        "haruncpi/laravel-id-generator": "^1.1",
         "jeffgreco13/filament-breezy": "^1.5",
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.2",

@@ -5,12 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use App\Models\Scopes\FormScope;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Log;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Haruncpi\LaravelIdGenerator\IdGenerator;
 
 class Form extends Model implements HasMedia
 {
@@ -33,26 +32,12 @@ class Form extends Model implements HasMedia
         return $this->belongsTo(User::class);
     }
 
-    protected static function booted(): void
+    public static function boot()
     {
-        static::creating(function (Form $form) {
-           // 產生 form 流水號
-           $lastForm = Form::orderBy('created_at','desc')->first();
-        //    Log::info($lastForm->id);
-
-          if (is_null($lastForm)) {
-            $form->form_number = 'TL'.(date("Y")-1911).date('m').str_pad(1, 3, "0", STR_PAD_LEFT);
-            return;
-           }
-
-           if (date('m', strtotime($lastForm->created_at)) === date('m')) {
-                $lastFormNumber = substr($lastForm->form_number, -3);
-            } else {
-                $lastFormNumber = 0;
-            }
-
-            $form->form_number = 'TL'.(date("Y")-1911).date('m').str_pad((int)$lastFormNumber + 1, 3, "0", STR_PAD_LEFT);
+        parent::boot();
+        self::creating(function (Model $model) {
+            $model->form_number = IdGenerator::generate(['table' => 'forms', 'field' => 'form_number', 'length' => 10, 'prefix' =>'TL'.(date("Y")-1911).date('m')]);
         });
-
     }
+
 }
