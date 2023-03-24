@@ -18,12 +18,15 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
+use Illuminate\Support\Facades\Auth;
 
 class InstructionResource extends Resource
 {
     protected static ?string $model = Instruction::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
+
+    protected static ?string $navigationLabel = '簡章文件上傳';
 
     public static function form(Form $form): Form
     {
@@ -45,16 +48,14 @@ class InstructionResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name'),
-                TextColumn::make('created_at')->dateTime(),
+                TextColumn::make('name')->label('文件名稱'),
+                TextColumn::make('created_at')->label('建立時間')->dateTime(),
             ])
             ->filters([
                 //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
             ]);
@@ -75,4 +76,11 @@ class InstructionResource extends Resource
             'edit' => Pages\EditInstruction::route('/{record}/edit'),
         ];
     }    
+
+    protected static function shouldRegisterNavigation(): bool
+    {
+        $user = Auth::user();
+
+        return $user->hasRole('Admin');
+    }
 }

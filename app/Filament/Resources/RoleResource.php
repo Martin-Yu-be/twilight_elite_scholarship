@@ -22,6 +22,8 @@ class RoleResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
 
+    protected static ?string $navigationLabel = '角色管理';
+
     public static function form(Form $form): Form
     {
         return $form

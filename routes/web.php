@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Models\Instruction;
+use App\Models\Media;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +17,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::get('/agreement', function (Instruction $instruction) {
+    $media =  $instruction->first()->getFirstMedia('instructions');
+    $publicFullUrl = $media->getFullUrl();
+
+    return view('agreement', ['publicFullUrl' => $publicFullUrl]);
 });

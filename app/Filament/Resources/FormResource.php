@@ -21,19 +21,45 @@ use Filament\Forms\Components\Section;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\SpatieMediaLibraryFileUpload;
+use Filament\Forms\Components\Actions\Modal\Actions\Action;
+use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Tabs;
+use Illuminate\Support\HtmlString;
+use App\Models\Instruction;
+use  AlperenErsoy\FilamentExport\Actions\FilamentExportBulkAction; // find in github src folder
 
- 
+
 class FormResource extends Resource
 {
     protected static ?string $model = FormModel::class;
 
+    protected static ?string $title = '獎學金申請';
+
     protected static ?string $navigationIcon = 'heroicon-o-document';
+
+    protected static ?string $navigationLabel = '獎學金申請';
 
     public static function form(Form $form): Form
     { 
         return $form
             ->schema([
+                // 簡章同意
+                Section::make('申請簡章')
+                ->schema([
+                    Placeholder::make('')->content(new HtmlString('<a href="/agreement" target="_blank"><font color="#F59E0B"><u>獎學金申請簡章</u></font></a>')),
+                    Checkbox::make('agreed')->label('我已閱讀並同意相關規定')->required(true),
+                ])->visible(function () {
+                    $userId = Auth::id();
+                    if (FormModel::where('user_id', $userId)->exists()) {
+                        return false;
+                    }
+                    return true;
+                })->collapsible(),
+                // 帶入 user_id
                 Hidden::make('user_id')->default(Auth::id()),
                 // Section1: 新生基本資料
                 Section::make('新生基本資料')
@@ -43,26 +69,27 @@ class FormResource extends Resource
                     Select::make('semester')->options([
                     '上學期' => '上學期',
                     '下學期' => '下學期',
-                ])->required(),
-                Select::make('district')
-                ->options([
-                    '不分區' => '不分區',
-                    '基隆區' => '基隆區',
-                    '苗栗區' => '苗栗區',
-                ])
-                ->required(),
-                Select::make('school')
-                ->options([
-                    '不分校' => '不分校',
-                    '基隆高中' => '基隆高中',
-                    '基隆女中' => '基隆女中',
-                    '苗栗高中' => '苗栗高中',
                     ])
-                ->required(),
-                TextInput::make('class')->required(),
-                TextInput::make('description')->required(),
-                ])
-                ->collapsible(),
+                    ->required(),
+                    Select::make('district')
+                    ->options([
+                        '不分區' => '不分區',
+                        '基隆區' => '基隆區',
+                        '苗栗區' => '苗栗區',
+                        ])
+                        ->required(),
+                    Select::make('school')
+                        ->options([
+                        '不分校' => '不分校',
+                        '基隆高中' => '基隆高中',
+                        '基隆女中' => '基隆女中',
+                        '苗栗高中' => '苗栗高中',
+                        ])
+                        ->required(),
+                    TextInput::make('class')->required(),
+                    TextInput::make('description')->required(),
+                    ])
+                ->collapsed(),
 
                 // Section2: 新生訪談問卷
                 Section::make('新生訪談問卷')
@@ -169,7 +196,7 @@ class FormResource extends Resource
                                 ]),
                             ])
                 ])
-                ->collapsible(),
+                ->collapsed(),
 
                 // Section3: 申請資料附件
                 Section::make('申請資料附件')
@@ -177,7 +204,7 @@ class FormResource extends Resource
                     SpatieMediaLibraryFileUpload::make('attachment')->collection('forms')->preserveFilenames()
                     ->enableDownload(),
                 ])
-                ->collapsible(),
+                ->collapsed(),
             ]);
     }
 
@@ -185,12 +212,13 @@ class FormResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('form_number')->sortable(),
-                TextColumn::make('applier')->searchable(),
+                TextColumn::make('form_number')->label('申請編號')->sortable(),
+                TextColumn::make('applier')->label('申請學生')->searchable(),
                 TextColumn::make('year')->sortable(),
                 TextColumn::make('semester')->sortable(),
                 TextColumn::make('district')->sortable(),
                 TextColumn::make('school')->sortable(),
+                TextColumn::make('description')->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('district')
@@ -219,6 +247,8 @@ class FormResource extends Resource
             ])
             ->bulkActions([
                 // Tables\Actions\DeleteBulkAction::make(),
+                FilamentExportBulkAction::make('export')
+                ->withHiddenColumns()
             ]);
     }
     

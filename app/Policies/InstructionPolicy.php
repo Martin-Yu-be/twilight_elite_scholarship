@@ -30,7 +30,7 @@ class InstructionPolicy
      */
     public function create(User $user): bool
     {
-        if ($user->hasRole('Admin')) {
+        if ($user->hasRole('Admin') && is_null(Instruction::first())) {
             return true;
         }
 
