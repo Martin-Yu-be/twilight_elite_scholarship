@@ -2,9 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\District;
-use App\Models\Role;
-use App\Models\School;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,7 +21,7 @@ class User extends Authenticatable implements FilamentUser
         'remark',
         'district_id',
         'school_id',
-        'is_activated'
+        'is_activated',
     ];
 
     protected $hidden = [

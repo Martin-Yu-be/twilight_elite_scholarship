@@ -22,35 +22,47 @@ class PermissionResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-        ->schema([
-            Card::make()
-            ->schema([
-                TextInput::make('name')
-                ->minLength(2)
-                ->maxLength(255)
-                ->required()
-                ->unique(ignoreRecord: true)
-                ])
-            ]);
+            ->schema(
+                [
+                    Card::make()
+                        ->schema(
+                            [
+                                TextInput::make('name')
+                                    ->minLength(2)
+                                    ->maxLength(255)
+                                    ->required()
+                                    ->unique(ignoreRecord: true),
+                            ]
+                        ),
+                ]
+            );
     }
 
     public static function table(Table $table): Table
     {
         return $table
-        ->columns([
-            TextColumn::make('name')
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-              
-            ])
-            ->bulkActions([
-                
-            ]);
+            ->columns(
+                [
+                    TextColumn::make('name'),
+                ]
+            )
+            ->filters(
+                [
+                    //
+                ]
+            )
+            ->actions(
+                [
+
+                ]
+            )
+            ->bulkActions(
+                [
+
+                ]
+            );
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -58,5 +70,5 @@ class PermissionResource extends Resource
             'create' => Pages\CreatePermission::route('/create'),
             'edit' => Pages\EditPermission::route('/{record}/edit'),
         ];
-    }    
+    }
 }

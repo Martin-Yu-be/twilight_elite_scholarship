@@ -28,36 +28,46 @@ class RoleResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-        ->schema([
-            TextInput::make('name')->label('角色')->minLength(2)->maxLength(255)->unique(ignoreRecord: true)->required(),
-            Select::make('permissions')->label('權限：獎學金線上申請')->multiple()->relationship('permissions', 'name')->preload()->required()
-        ]);
+            ->schema(
+                [
+                    TextInput::make('name')->label('角色')->minLength(2)->maxLength(255)->unique(ignoreRecord: true)->required(),
+                    Select::make('permissions')->label('權限：獎學金線上申請')->multiple()->relationship('permissions', 'name')->preload()->required(),
+                ]
+            );
     }
 
     public static function table(Table $table): Table
     {
         return $table
-        ->columns([
-            TextColumn::make('name')->label('角色')->sortable(),
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                //
-            ]);
+            ->columns(
+                [
+                    TextColumn::make('name')->label('角色')->sortable(),
+                ]
+            )
+            ->filters(
+                [
+                    //
+                ]
+            )
+            ->actions(
+                [
+                    Tables\Actions\EditAction::make(),
+                ]
+            )
+            ->bulkActions(
+                [
+                    //
+                ]
+            );
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -66,7 +76,7 @@ class RoleResource extends Resource
             'edit' => Pages\EditRole::route('/{record}/edit'),
         ];
     }
-    
+
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->where('name', '!=', '管理員');

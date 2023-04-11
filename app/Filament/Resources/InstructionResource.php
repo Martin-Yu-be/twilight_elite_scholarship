@@ -28,43 +28,55 @@ class InstructionResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                Section::make('獎學金申請簡章')
-                ->schema([
-                    TextInput::make('name')->label('文件名稱')->disabled(),
-                    SpatieMediaLibraryFileUpload::make('簡章檔案')
-                    ->collection('instructions')
-                    ->preserveFilenames()
-                    ->enableDownload()
-                    ->required(),
-                ])
-            ]);
+            ->schema(
+                [
+                    Section::make('獎學金申請簡章')
+                        ->schema(
+                            [
+                                TextInput::make('name')->label('文件名稱')->disabled(),
+                                SpatieMediaLibraryFileUpload::make('簡章檔案')
+                                    ->collection('instructions')
+                                    ->preserveFilenames()
+                                    ->enableDownload()
+                                    ->required(),
+                            ]
+                        ),
+                ]
+            );
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                TextColumn::make('name')->label('文件名稱'),
-                TextColumn::make('created_at')->label('建立時間')->date('Y-m-d H:i:s'),
-            ])
-            ->filters([
-                //
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-            ]);
+            ->columns(
+                [
+                    TextColumn::make('name')->label('文件名稱'),
+                    TextColumn::make('created_at')->label('建立時間')->date('Y-m-d H:i:s'),
+                ]
+            )
+            ->filters(
+                [
+                    //
+                ]
+            )
+            ->actions(
+                [
+                    Tables\Actions\EditAction::make(),
+                ]
+            )
+            ->bulkActions(
+                [
+                ]
+            );
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -72,5 +84,5 @@ class InstructionResource extends Resource
             'create' => Pages\CreateInstruction::route('/create'),
             'edit' => Pages\EditInstruction::route('/{record}/edit'),
         ];
-    }    
+    }
 }
