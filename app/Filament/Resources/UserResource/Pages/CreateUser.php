@@ -8,7 +8,7 @@ use Filament\Resources\Pages\CreateRecord;
 class CreateUser extends CreateRecord
 {
     protected static string $resource = UserResource::class;
-    
+
     protected static ?string $title = '新增用戶';
 
     protected static ?string $breadcrumb = '新增用戶';
