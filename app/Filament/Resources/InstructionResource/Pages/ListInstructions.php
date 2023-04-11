@@ -10,7 +10,7 @@ class ListInstructions extends ListRecords
 {
     protected static string $resource = InstructionResource::class;
 
-    protected static ?string $title = '簡章文件上傳';
+    protected static ?string $title = '簡章 PDF 設定';
 
     protected function getActions(): array
     {

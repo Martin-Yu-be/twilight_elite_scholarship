@@ -15,12 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('district');
-            $table->string('school');
+            $table->integer('district_id');
+            $table->integer('school_id');
+            $table->boolean('is_activated')->default(true);
+            $table->string('remark')->nullable();
             $table->rememberToken();
             $table->timestamps();
+            $table->index('school_id');
         });
     }
 

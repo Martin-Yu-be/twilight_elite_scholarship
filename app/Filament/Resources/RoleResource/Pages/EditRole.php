@@ -10,6 +10,10 @@ class EditRole extends EditRecord
 {
     protected static string $resource = RoleResource::class;
 
+    protected static ?string $title = '編輯角色';
+
+    protected static ?string $breadcrumb = '編輯角色';
+
     protected function getActions(): array
     {
         return [
@@ -24,6 +28,6 @@ class EditRole extends EditRecord
 
     protected function getSavedNotificationTitle(): ?string
     {
-        return 'Role updated';
+        return '角色更新成功';
     }
 }

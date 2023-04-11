@@ -10,6 +10,8 @@ class EditPermission extends EditRecord
 {
     protected static string $resource = PermissionResource::class;
 
+    protected static ?string $title = '編輯權限';
+
     protected function getActions(): array
     {
         return [
@@ -24,6 +26,6 @@ class EditPermission extends EditRecord
 
     protected function getSavedNotificationTitle(): ?string
     {
-        return 'Permission updated';
+        return '權限更新成功';
     }
 }

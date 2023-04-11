@@ -10,6 +10,8 @@ class EditInstruction extends EditRecord
 {
     protected static string $resource = InstructionResource::class;
 
+    protected static ?string $title = '簡章 PDF 設定';
+
     protected function getActions(): array
     {
         return [
@@ -24,6 +26,6 @@ class EditInstruction extends EditRecord
 
     protected function getSavedNotificationTitle(): ?string
     {
-        return '更新成功';
+        return '簡章更新成功';
     }
 }

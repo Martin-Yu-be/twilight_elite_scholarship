@@ -14,5 +14,4 @@ class Instruction extends Model implements HasMedia
     protected $fillable = [
         'name',
     ];
-
 }

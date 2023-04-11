@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\InstructionResource\Pages;
 
 use App\Filament\Resources\InstructionResource;
-use Filament\Pages\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateInstruction extends CreateRecord
@@ -17,6 +16,6 @@ class CreateInstruction extends CreateRecord
 
     protected function getCreatedNotificationTitle(): ?string
     {
-        return '簡章新增成功！';
+        return '簡章新增成功';
     }
 }

@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Models\Instruction;
-use App\Models\Media;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,12 +14,5 @@ use App\Models\Media;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::get('/agreement', function (Instruction $instruction) {
-    $media =  $instruction->first()->getFirstMedia('instructions');
-    $publicFullUrl = $media->getFullUrl();
-
-    return view('agreement', ['publicFullUrl' => $publicFullUrl]);
+    return redirect('forms');
 });

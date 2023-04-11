@@ -2,71 +2,61 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\District;
+use App\Models\Role;
+use App\Models\School;
 use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use App\Models\Form;
-use App\Models\Role;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use JeffGreco13\FilamentBreezy\Traits\TwoFactorAuthenticatable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements FilamentUser
 {
-    use HasRoles, HasApiTokens, HasFactory, Notifiable, TwoFactorAuthenticatable;
+    use HasRoles, HasApiTokens, HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'district',
-        'school',
+        'remark',
+        'district_id',
+        'school_id',
+        'is_activated'
     ];
 
-    public function form(): HasOne
-    {
-        return $this->hasOne(Form::class);
-    }
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    protected $casts = [
+        'is_activated' => 'boolean',
+    ];
 
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
     }
 
-    public function canAccessFilament(): bool
+    public function district(): BelongsTo
     {
-        // return str_ends_with($this->email, '@admin.com') && $this->hasVerifiedEmail();
-        return $this->hasRole(['Admin', '學生', '校方', '輔導幹部', '決策委員']);
+        return $this->belongsTo(District::class);
     }
 
+    public function school(): BelongsTo
+    {
+        return $this->belongsTo(School::class);
+    }
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
+    public function canAccessFilament(): bool
+    {
+        if ($this->hasRole('管理員') || $this->is_activated) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
